@@ -19,6 +19,8 @@ $ git clone git@github.com:Djancyp/lunaexample.git
 
 ```bash
  cd lunaexample
+  cd frontend
+  npm install
  go mod tidy
  go run main.go
 ```
