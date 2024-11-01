@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"os"
 
 	"github.com/Djancyp/luna"
@@ -11,7 +15,7 @@ import (
 func main() {
 
 	app, err := luna.New(luna.Config{
-		ENV:                 "dev", // dev, prodoction
+		ENV:                 "production", // dev, production
 		RootPath:            "frontend/",
 		AssetsPath:          "frontend/src/assets",
 		EntryPoint:          "frontend/src/entry-server.tsx",
@@ -95,9 +99,50 @@ type Product struct {
 	Price float64 `json:"price"`
 }
 
-func PropExample(_ ...map[string]string) map[string]interface{} {
+type Todo struct {
+	ID        int    `json:"id"`
+	Title      string `json:"title"`
+	Completed bool   `json:"completed"`
+	UserID    int    `json:"userId"`
+}
 
-	return map[string]interface{}{
-		"title": "Prop Example",
+func PropExample(_ ...map[string]string) map[string]interface{} {
+	todos, err := fetchTodos()
+	if err != nil {
+		return map[string]interface{}{
+			"error": err.Error(),
+		}
 	}
+
+	todosMap := make(map[string]interface{})
+  todosMap["todos"] = todos
+
+	return todosMap
+}
+
+func fetchTodos() ([]Todo, error) {
+	url := "https://jsonplaceholder.typicode.com/todos"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	var todos []Todo
+	err = json.Unmarshal(body, &todos)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
+	}
+
+	return todos, nil
 }

@@ -151,11 +151,7 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
         })
           .then((res) => res.json())
           .then((data: any) => {
-            if (data[to]) {
-              globalThis.props[to] = data[to];
-            } else {
-              globalThis.props[to] = {};
-            }
+            props = data[to];
             navigate(to, {
               replace,
               state,
@@ -164,7 +160,7 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
             });
           })
           .catch((_) => {
-            globalThis.props[to] = {};
+            props = {};
             navigate(to, {
               replace,
               state,
