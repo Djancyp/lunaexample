@@ -5,6 +5,7 @@ import (
 
 	"github.com/Djancyp/luna"
 	"github.com/Djancyp/luna/pkg"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 		ENV:                 "dev", // dev, prodoction
 		RootPath:            "frontend/",
 		AssetsPath:          "frontend/src/assets",
-		EntryPoint:         "frontend/src/entry-server.tsx",
+		EntryPoint:          "frontend/src/entry-server.tsx",
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,
@@ -73,12 +74,25 @@ func main() {
 		app.Logger.Error().Msgf("Error: %s", err)
 		os.Exit(1)
 	}
+
+	api := app.Group("/api")
+
+	api.GET("/products", func(c echo.Context) error {
+		products := []Product{
+			{Name: "Product 1", Price: 100, ID: 1},
+			{Name: "Product 2", Price: 200, ID: 2},
+			{Name: "Product 3", Price: 300, ID: 3},
+			{Name: "Product 4", Price: 400, ID: 4},
+		}
+		return c.JSON(200, products)
+	})
 	app.Start(":8080")
 }
 
 type Product struct {
-	Name  string
-	Price float64
+	ID    int     `json:"id"`
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
 }
 
 func PropExample(_ ...map[string]string) map[string]interface{} {
