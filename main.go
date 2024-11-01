@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Djancyp/luna"
 	"github.com/Djancyp/luna/pkg"
@@ -25,7 +26,8 @@ func main() {
 		HotReloadServerPort: 3000,
 		Routes: []pkg.ReactRoute{
 			{
-				Path: "/",
+				CacheExpiry: time.Now().Add(1 * time.Minute).Unix(), // To not cache, set to 0
+				Path:        "/",
 				Props: func(_ ...map[string]string) map[string]interface{} {
 					return map[string]interface{}{
 						"title": "Hello World",
@@ -42,7 +44,8 @@ func main() {
 				},
 			},
 			{
-				Path: "/apipage",
+				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
+				Path:        "/apipage",
 				Head: pkg.Head{
 					Title:       "API Page",
 					Description: "API page description",
@@ -55,8 +58,9 @@ func main() {
 			},
 
 			{
-				Path:  "/propexample",
-				Props: PropExample,
+				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
+				Path:        "/propexample",
+				Props:       PropExample,
 				Head: pkg.Head{
 					Title:       "Prop Example",
 					Description: "Prop page description",
