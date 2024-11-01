@@ -13,7 +13,7 @@ func main() {
 		ENV:                 "dev", // dev, prodoction
 		RootPath:            "frontend/",
 		AssetsPath:          "frontend/src/assets",
-		EnteryPoint:         "frontend/src/entry-server.tsx",
+		EntryPoint:         "frontend/src/entry-server.tsx",
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,
