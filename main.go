@@ -18,7 +18,8 @@ func main() {
 		ENV:                 "production", // dev, production
 		RootPath:            "frontend/",
 		AssetsPath:          "frontend/src/assets",
-		EntryPoint:          "frontend/src/entry-server.tsx",
+		ServerEntryPoint:    "frontend/src/entry-server.tsx",
+		ClientEntryPoint:    "frontend/src/entry-client.tsx",
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,
@@ -101,7 +102,7 @@ type Product struct {
 
 type Todo struct {
 	ID        int    `json:"id"`
-	Title      string `json:"title"`
+	Title     string `json:"title"`
 	Completed bool   `json:"completed"`
 	UserID    int    `json:"userId"`
 }
@@ -115,7 +116,7 @@ func PropExample(_ ...map[string]string) map[string]interface{} {
 	}
 
 	todosMap := make(map[string]interface{})
-  todosMap["todos"] = todos
+	todosMap["todos"] = todos
 
 	return todosMap
 }
