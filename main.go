@@ -16,11 +16,12 @@ import (
 func main() {
 
 	app, err := luna.New(luna.Config{
-		ENV:                 "production", // dev, production
+		ENV:                 "dev", // dev, production
 		RootPath:            "frontend/",
 		AssetsPath:          "frontend/src/assets",
 		ServerEntryPoint:    "frontend/src/entry-server.tsx",
 		ClientEntryPoint:    "frontend/src/entry-client.tsx",
+		FaviconPath:         "luna.svg",
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,

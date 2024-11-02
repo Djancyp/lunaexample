@@ -6,4 +6,4 @@ function Card({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-export default Card;
+export default React.memo(Card);
