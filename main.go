@@ -11,6 +11,7 @@ import (
 	"github.com/Djancyp/luna"
 	"github.com/Djancyp/luna/pkg"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -25,6 +26,14 @@ func main() {
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,
+		Store: func() map[string]interface{} {
+			return map[string]interface{}{
+				"User": map[string]interface{}{
+					"name":  "John Doe",
+					"email": "johnDoe@example.com",
+				},
+			}
+		},
 		Routes: []pkg.ReactRoute{
 			{
 				CacheExpiry: time.Now().Add(1 * time.Minute).Unix(), // To not cache, set to 0
@@ -59,6 +68,10 @@ func main() {
 			},
 
 			{
+				Middleware: []echo.MiddlewareFunc{
+					middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
+					}),
+				},
 				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
 				Path:        "/propexample",
 				Props:       PropExample,

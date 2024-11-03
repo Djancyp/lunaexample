@@ -3,9 +3,11 @@ import reactLogo from "../assets/react.svg";
 import GoLogo from "../assets/go.svg";
 import EchoLogo from "../assets/echo.svg";
 import Card from "../components/Card";
+import { useUser } from "../StoreProvider";
 
 function HomePage() {
   const [count, setCount] = useState(0);
+  const { user } = useUser();
 
   return (
     <>
@@ -35,6 +37,9 @@ function HomePage() {
           >
             count is {count}
           </button>
+          <p className="mb-5">
+            {user ? `Hello ${user.name}` : "Hello, please login"}
+          </p>
           <p className="mb-5">
             Edit <code>src/Pages/Home.tsx</code> and save to test HMR
           </p>
