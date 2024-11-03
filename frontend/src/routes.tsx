@@ -12,12 +12,7 @@ function R() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/apipage" element={<ApiPage />} />
-          <Route
-            path="/propexample"
-            element={
-                <Props />
-            }
-          />
+          <Route path="/propexample" element={<Props />} />
         </Route>
       </Routes>
     </TokenProvider>

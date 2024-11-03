@@ -11,7 +11,6 @@ import (
 	"github.com/Djancyp/luna"
 	"github.com/Djancyp/luna/pkg"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -69,8 +68,7 @@ func main() {
 
 			{
 				Middleware: []echo.MiddlewareFunc{
-					middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-					}),
+					CustomMiddleware,
 				},
 				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
 				Path:        "/propexample",
@@ -164,4 +162,10 @@ func fetchTodos() ([]Todo, error) {
 	}
 
 	return todos, nil
+}
+
+func CustomMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.Redirect(http.StatusPermanentRedirect, "/apipage")
+	}
 }

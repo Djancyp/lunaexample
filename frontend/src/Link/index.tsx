@@ -142,14 +142,20 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
             ? replaceProp
             : createPath(location) === createPath(path);
         // fetch the page props
-        fetch("/props", {
+        fetch("/navigate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ path: to }),
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (res.redirected) {
+              window.location.href = res.url;
+              return;
+            }
+            return res.json();
+          })
           .then((data: any) => {
             props = data[to];
             navigate(to, {
@@ -159,14 +165,8 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
               relative,
             });
           })
-          .catch((_) => {
+          .catch((error) => {
             props = {};
-            navigate(to, {
-              replace,
-              state,
-              preventScrollReset,
-              relative,
-            });
           });
       }
     },
