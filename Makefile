@@ -1,2 +1,2 @@
-@dev:
-	air
+dev:
+	@air

@@ -38,7 +38,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       preventScrollReset,
       ...rest
     },
-    ref
+    ref,
   ) {
     // check if this is existing
     // globalThis.props[window.location.pathname]
@@ -86,7 +86,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       relative,
     });
     function handleClick(
-      event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     ) {
       if (onClick) onClick(event);
       if (!event.defaultPrevented) {
@@ -104,9 +104,10 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         target={target}
       />
     );
-  }
+  },
 );
 
+let ppProps: any = {};
 export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
   to: To,
   {
@@ -123,7 +124,7 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
     preventScrollReset?: boolean;
     relative?: RelativeRoutingType;
     unstable_viewTransition?: boolean;
-  } = {}
+  } = {},
 ): (event: React.MouseEvent<E, MouseEvent>) => void {
   // check if props exist for this page
   let navigate = useNavigate();
@@ -152,12 +153,22 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
           .then((res) => {
             if (res.redirected) {
               window.location.href = res.url;
+              navigate(res.url);
               return;
             }
             return res.json();
           })
           .then((data: any) => {
-            props = data[to];
+            // change title only client side
+            if (window.document) {
+              window.document.title = data.title;
+            }
+            ppProps = {
+              ...ppProps,
+              ...data.props[to],
+            };
+
+            props = ppProps;
             navigate(to, {
               replace,
               state,
@@ -166,7 +177,7 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
             });
           })
           .catch((error) => {
-            props = {};
+            console.error("Error:", error);
           });
       }
     },
@@ -181,7 +192,7 @@ export function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
       preventScrollReset,
       relative,
       unstable_viewTransition,
-    ]
+    ],
   );
 }
 type LimitedMouseEvent = Pick<
@@ -190,7 +201,7 @@ type LimitedMouseEvent = Pick<
 >;
 export function shouldProcessLinkClick(
   event: LimitedMouseEvent,
-  target?: string
+  target?: string,
 ) {
   return (
     event.button === 0 && // Ignore everything but left clicks

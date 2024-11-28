@@ -3,7 +3,7 @@ module lunatest
 go 1.21.6
 
 require (
-	github.com/Djancyp/luna v0.0.0-20241031115707-fff497739e98
+	github.com/Djancyp/luna v1.3.0
 	github.com/labstack/echo/v4 v4.12.0
 )
 
@@ -26,5 +26,3 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 )
-
-replace github.com/Djancyp/luna => /home/djan/Documents/luna

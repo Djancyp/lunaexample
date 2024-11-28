@@ -14,7 +14,6 @@ import (
 )
 
 func main() {
-
 	app, err := luna.New(luna.Config{
 		ENV:                 "dev", // dev, production
 		RootPath:            "frontend/",
@@ -25,21 +24,21 @@ func main() {
 		PublicPath:          "frontend/public",
 		TailwindCSS:         true,
 		HotReloadServerPort: 3000,
-		Store: func() map[string]interface{} {
+		Store: func(c echo.Context) map[string]interface{} {
 			return map[string]interface{}{
 				"User": map[string]interface{}{
 					"name":  "John Doe",
-					"email": "johnDoe@example.com",
+					"email": "John@doe.com",
 				},
 			}
 		},
 		Routes: []pkg.ReactRoute{
 			{
-				CacheExpiry: time.Now().Add(1 * time.Minute).Unix(), // To not cache, set to 0
+				CacheExpiry: time.Now().Add(365 * 24 * time.Hour).Unix(),
 				Path:        "/",
-				Props: func(_ ...map[string]string) map[string]interface{} {
+				Props: func(c echo.Context, params map[string]string) map[string]interface{} {
 					return map[string]interface{}{
-						"title": "Hello World",
+						"count": 20,
 					}
 				},
 				Head: pkg.Head{
@@ -53,7 +52,7 @@ func main() {
 				},
 			},
 			{
-				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
+				CacheExpiry: time.Now().Add(365 * 24 * time.Hour).Unix(),
 				Path:        "/apipage",
 				Head: pkg.Head{
 					Title:       "API Page",
@@ -65,11 +64,7 @@ func main() {
 					},
 				},
 			},
-
 			{
-				Middleware: []echo.MiddlewareFunc{
-					CustomMiddleware,
-				},
 				CacheExpiry: time.Now().Add(5 * time.Minute).Unix(),
 				Path:        "/propexample",
 				Props:       PropExample,
@@ -95,7 +90,6 @@ func main() {
 		app.Logger.Error().Msgf("Error: %s", err)
 		os.Exit(1)
 	}
-
 	api := app.Group("/api")
 
 	api.GET("/products", func(c echo.Context) error {
@@ -107,7 +101,7 @@ func main() {
 		}
 		return c.JSON(200, products)
 	})
-	app.Start(":8080")
+	app.Start(":5000")
 }
 
 type Product struct {
@@ -123,7 +117,7 @@ type Todo struct {
 	UserID    int    `json:"userId"`
 }
 
-func PropExample(_ ...map[string]string) map[string]interface{} {
+func PropExample(c echo.Context, _ map[string]string) map[string]interface{} {
 	todos, err := fetchTodos()
 	if err != nil {
 		return map[string]interface{}{
@@ -131,10 +125,9 @@ func PropExample(_ ...map[string]string) map[string]interface{} {
 		}
 	}
 
-	todosMap := make(map[string]interface{})
-	todosMap["todos"] = todos
-
-	return todosMap
+	return map[string]interface{}{
+		"todos": todos,
+	}
 }
 
 func fetchTodos() ([]Todo, error) {

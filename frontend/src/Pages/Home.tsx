@@ -6,7 +6,8 @@ import Card from "../components/Card";
 import { useUser } from "../StoreProvider";
 
 function HomePage() {
-  const [count, setCount] = useState(0);
+  const { count } = props;
+  const [Count, setCount] = useState(count);
   const { user } = useUser();
 
   return (
@@ -32,13 +33,13 @@ function HomePage() {
       <Card>
         <div className="flex justify-center flex-col ">
           <button
-            onClick={() => setCount((count) => count + 1)}
+            onClick={() => setCount((count: number) => count + 1)}
             className="px-6 py-2 min-w-[120px] text-center text-white bg-violet-600 border border-violet-600 rounded active:text-violet-500 hover:bg-transparent hover:text-violet-600 focus:outline-none focus:ring mb-5"
           >
-            count is {count}
+            count is {Count}
           </button>
           <p className="mb-5">
-            {user ? `Hello ${user.name}` : "Hello, please login"}
+            {user ? `Hello ${user.name}` : "Hello, please login!"}
           </p>
           <p className="mb-5">
             Edit <code>src/Pages/Home.tsx</code> and save to test HMR
